@@ -1,5 +1,6 @@
 package application;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,6 +20,8 @@ public class BusController {
 	PreparedStatement pst = null;
 	ResultSet srs;
 	int seatno = 0;
+	
+	@FXML BusTicket busTicket;
 	
 	@FXML
 	private void initialize() {
@@ -164,6 +167,16 @@ public class BusController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}  	
+    }
+    
+    @FXML
+    void onClickCheck(ActionEvent event) {
+    	try {
+			busTicket.showCheckStage();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void bill() {
