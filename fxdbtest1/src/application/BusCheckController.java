@@ -11,11 +11,15 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class BusCheckController {
 	Connection conn;
@@ -39,7 +43,18 @@ public class BusCheckController {
 		} 
 	}
     @FXML
-    private TableView<?> tableContent;
+    private TableView<users> tableContent;
+    @FXML
+    private TableColumn<users, String> col_name;
+
+    @FXML
+    private TableColumn<users, Integer> col_seat;
+
+    @FXML
+    private TableColumn<users, Integer> col_price;
+
+    @FXML
+    private TableColumn<users, String> col_date;
 
     @FXML
     private DatePicker txtdate;
@@ -50,6 +65,7 @@ public class BusCheckController {
     	int month = (txtdate.getValue().getMonthValue());
     	int day = (txtdate.getValue().getDayOfMonth());
     	String date = ""+year+"-"+month+"-"+day;
+    	ObservableList<users> list = FXCollections.observableArrayList();
     	
 		try {
 			pst = conn.prepareStatement("select * from buss where date =?");
@@ -62,14 +78,28 @@ public class BusCheckController {
 			{				
 				ResultSetMetaData rsd = srs.getMetaData();
 				int c = rsd.getColumnCount();
+				
 				while(srs.next()) {
-					System.out.println(srs.getString("name"));
-					System.out.println(srs.getString("seatno"));
-					System.out.println(srs.getString("price"));
-					System.out.println(srs.getString("date"));		
+					String r1 = srs.getString("name");
+					int r2 = srs.getInt("seatno");
+					int r3 = srs.getInt("price");
+					String r4 = srs.getString("date");
 					
+					System.out.println(r1);
+					System.out.println(r2);
+					System.out.println(r3);
+					System.out.println(r4);
+					
+					list.add(new users(r1, r2,r3,r4));
+					
+					col_name.setCellValueFactory(new PropertyValueFactory<users,String>("name"));
+					col_seat.setCellValueFactory(new PropertyValueFactory<users,Integer>("seatno"));
+					col_price.setCellValueFactory(new PropertyValueFactory<users,Integer>("price"));
+					col_date.setCellValueFactory(new PropertyValueFactory<users,String>("date"));
+					
+					tableContent.setItems(list);
 				}								
-			}											
+			}																
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
